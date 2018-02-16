@@ -42,6 +42,7 @@ import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
 import static extension utils.Pluralizer.*
+import org.parisoft.noop.noop.ArrayLiteral
 
 /**
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist
@@ -178,7 +179,6 @@ class NoopProposalProvider extends AbstractNoopProposalProvider {
 				acceptor.accept(method.createInvocationProposal(context))
 			]
 		}
-
 	}
 
 	override completeTerminalExpression_Type(EObject model, Assignment assignment, ContentAssistContext context,
@@ -251,16 +251,21 @@ class NoopProposalProvider extends AbstractNoopProposalProvider {
 
 	override complete_STRING(EObject model, RuleCall ruleCall, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
-		if (model instanceof Variable && (model as Variable).isField) {
-			for (file : model.URI.resFolder.listFiles) {
+		val field = if (model instanceof Variable) {
+				model
+			} else if (model instanceof ArrayLiteral) {
+				model.getContainerOfType(Variable)
+			}
+
+		if (field?.isField) {
+			for (file : field.URI.resFolder.listFiles) {
 				val proposalString = '''"«Members::FILE_SCHEMA»«file.name»"'''
 				val displayString = new StyledString(Members::FILE_SCHEMA + file.name, StyledString::COUNTER_STYLER)
 				val image = labelProvider.getImage(file)
 				val priority = keywordPriority
 				val prefix = context.prefix
 				val ctx = context.copy.setMatcher(smartMatcher).toContext
-				acceptor.accept(
-					createCompletionProposal(proposalString, displayString, image, priority, prefix, ctx))
+				acceptor.accept(createCompletionProposal(proposalString, displayString, image, priority, prefix, ctx))
 			}
 		}
 	}
@@ -350,8 +355,10 @@ class NoopProposalProvider extends AbstractNoopProposalProvider {
 				model.params
 			NoopClass:
 				model.allFieldsTopDown.takeWhile [
-					node.startLine < context.currentNode.startLine
+					it != context.currentModel
 				].suppressOverriden.suppressHeaders
+			NewInstance:
+				model.type.allFieldsBottomUp
 			default:
 				newArrayList
 		} + model.eContainer.listVariables(context)
