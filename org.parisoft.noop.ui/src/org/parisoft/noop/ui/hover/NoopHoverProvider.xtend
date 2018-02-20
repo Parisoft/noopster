@@ -38,7 +38,7 @@ class NoopHoverProvider extends DefaultEObjectHoverProvider {
 			'''
 			Variable: '''
 				«val type = o.typeOf.name»
-				«val dimension = o.dimensionOf.map['''<b>[</b>«it»<b>]</b>'''].join»
+				«val dimension = o.dimensionOf.map['''<b>[</b>«IF o.isBounded»«it»«ELSE»?«ENDIF»<b>]</b>'''].join»
 				«val container = o.containerClass.name»
 				«IF o.isField»
 					«val value = if (o.isConstant) {
@@ -52,7 +52,7 @@ class NoopHoverProvider extends DefaultEObjectHoverProvider {
 					«o.image.toTag»&nbsp;<b>«type»</b>«dimension» «container».<b>«o.name»«value»</b>
 				«ELSE»
 					«val method = o.getContainerOfType(Method)»
-					«val params = method.params.map['''«it.type.name»«it.dimension.map['''[«value?.valueOf»]'''].join»'''].join(', ')»
+					«val params = method.params.map['''«it.type.name»«it.dimension.map['''[«value?.valueOf ?: '?'»]'''].join»'''].join(', ')»
 					«o.image.toTag»&nbsp;<b>«type»</b>«dimension» <b>«o.name»</b> - «container».«method.name»(«params»)
 				«ENDIF»
 			'''

@@ -9,6 +9,9 @@ import org.eclipse.xtext.validation.Issue
 import org.parisoft.noop.noop.NoopClass
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.parisoft.noop.validation.NoopValidator
+import org.parisoft.noop.noop.StorageType
+import org.parisoft.noop.noop.Variable
+import org.parisoft.noop.noop.NoopFactory
 
 /**
  * Custom quickfixes.
@@ -27,12 +30,24 @@ class NoopQuickfixProvider extends DefaultQuickfixProvider {
 //		]
 //	}
 	@Fix(NoopValidator::CLASS_RECURSIVE_HIERARCHY)
-	def fixClassRecursiveHierarchy(Issue issue, IssueResolutionAcceptor acceptor) {
+	def classRecursiveHierarchy(Issue issue, IssueResolutionAcceptor acceptor) {
 //		acceptor.acceptMulti(issue, 'Remove hierarchy', 'Remove class hierarchy', null, [ NoopClass c, ctx |
 //			ctx.addModification(c, [superClass = null])
 //		])
-		acceptor.accept(issue, 'Remove hierarchy', '''Removes "extends «issue.data.get(0)»"''', null, [c, ctx |
+		acceptor.accept(issue, 'Remove hierarchy', '''Removes "extends «issue.data.head»"''', null, [ c, ctx |
 			(c as NoopClass).superClass = null
 		])
+	}
+
+	@Fix(NoopValidator::STRING_FILE_NON_ROM)
+	def stringFileNonRom(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, '''Tag as «StorageType::PRGROM.literal»''', '''Tag as «StorageType::PRGROM.literal»''',
+			null, [ c, ctx |
+				(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::PRGROM]
+			])
+		acceptor.accept(issue, '''Tag as «StorageType::CHRROM.literal»''', '''Tag as «StorageType::CHRROM.literal»''',
+			null, [ c, ctx |
+				(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::CHRROM]
+			])
 	}
 }
