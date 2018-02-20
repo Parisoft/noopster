@@ -31,23 +31,24 @@ class NoopQuickfixProvider extends DefaultQuickfixProvider {
 //	}
 	@Fix(NoopValidator::CLASS_RECURSIVE_HIERARCHY)
 	def classRecursiveHierarchy(Issue issue, IssueResolutionAcceptor acceptor) {
-//		acceptor.acceptMulti(issue, 'Remove hierarchy', 'Remove class hierarchy', null, [ NoopClass c, ctx |
-//			ctx.addModification(c, [superClass = null])
-//		])
-		acceptor.accept(issue, 'Remove hierarchy', '''Removes "extends «issue.data.head»"''', null, [ c, ctx |
+		val desc = '''
+		«issue.data.head» {
+			...
+		}'''
+		acceptor.accept(issue, 'Remove hierarchy', desc, null, [ c, ctx |
 			(c as NoopClass).superClass = null
 		])
 	}
 
 	@Fix(NoopValidator::STRING_FILE_NON_ROM)
 	def stringFileNonRom(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, '''Tag as «StorageType::PRGROM.literal»''', '''Tag as «StorageType::PRGROM.literal»''',
-			null, [ c, ctx |
-				(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::PRGROM]
-			])
-		acceptor.accept(issue, '''Tag as «StorageType::CHRROM.literal»''', '''Tag as «StorageType::CHRROM.literal»''',
-			null, [ c, ctx |
-				(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::CHRROM]
-			])
+		val prgDesc = '''«issue.data.head» «StorageType::PRGROM.literal» : ...'''
+		val chrDesc = '''«issue.data.head» «StorageType::CHRROM.literal» : ...'''
+		acceptor.accept(issue, '''Tag as «StorageType::PRGROM.literal»''', prgDesc, null, [ c, ctx |
+			(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::PRGROM]
+		])
+		acceptor.accept(issue, '''Tag as «StorageType::CHRROM.literal»''', chrDesc, null, [ c, ctx |
+			(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::CHRROM]
+		])
 	}
 }
