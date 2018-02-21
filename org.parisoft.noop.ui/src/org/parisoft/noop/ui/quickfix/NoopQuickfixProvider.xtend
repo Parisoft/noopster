@@ -12,6 +12,7 @@ import org.parisoft.noop.validation.NoopValidator
 import org.parisoft.noop.noop.StorageType
 import org.parisoft.noop.noop.Variable
 import org.parisoft.noop.noop.NoopFactory
+import java.util.regex.Pattern
 
 /**
  * Custom quickfixes.
@@ -20,6 +21,8 @@ import org.parisoft.noop.noop.NoopFactory
  */
 class NoopQuickfixProvider extends DefaultQuickfixProvider {
 
+	val camelCasePattern = Pattern::compile('(?=[A-Z])')
+	
 //	@Fix(NoopValidator.INVALID_NAME)
 //	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
 //		acceptor.accept(issue, 'Capitalize name', 'Capitalize the name.', 'upcase.png') [
@@ -42,13 +45,47 @@ class NoopQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(NoopValidator::STRING_FILE_NON_ROM)
 	def stringFileNonRom(Issue issue, IssueResolutionAcceptor acceptor) {
-		val prgDesc = '''«issue.data.head» «StorageType::PRGROM.literal» : ...'''
-		val chrDesc = '''«issue.data.head» «StorageType::CHRROM.literal» : ...'''
-		acceptor.accept(issue, '''Tag as «StorageType::PRGROM.literal»''', prgDesc, null, [ c, ctx |
-			(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::PRGROM]
+		val prgDesc = '''«issue.data.head» «StorageType::PRGROM.literal»'''
+		val chrDesc = '''«issue.data.head» «StorageType::CHRROM.literal»'''
+		acceptor.accept(issue, '''Tag as «StorageType::PRGROM.literal»''', prgDesc, null, [ o, ctx |
+			(o as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::PRGROM]
 		])
-		acceptor.accept(issue, '''Tag as «StorageType::CHRROM.literal»''', chrDesc, null, [ c, ctx |
-			(c as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::CHRROM]
+		acceptor.accept(issue, '''Tag as «StorageType::CHRROM.literal»''', chrDesc, null, [ o, ctx |
+			(o as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::CHRROM]
+		])
+	}
+	
+	@Fix(NoopValidator::ROM_FIELD_NON_CONSTANT)
+	def romFieldNonConstant(Issue issue, IssueResolutionAcceptor acceptor) {
+		val const = camelCasePattern.split(issue.data.head).join('_').toUpperCase
+		val label = '''Make «issue.data.head» constant'''
+		val desc = '''«const» «issue.data.get(1)»'''
+//		acceptor.accept(issue, label, desc, null, [ctx|
+//			ctx.xtextDocument.replace(issue.offset, issue.data.head.length, const)
+//		])
+		acceptor.acceptMulti(issue, label, desc, null, [Variable v|
+			v.name = const
+		])
+	}
+	
+	@Fix(NoopValidator::CONSTANT_FIELD_DIMENSION)
+	def constantFieldDimension(Issue issue, IssueResolutionAcceptor acceptor) {
+		val prgDesc = '''«issue.data.head» «StorageType::PRGROM.literal»'''
+		val chrDesc = '''«issue.data.head» «StorageType::CHRROM.literal»'''
+		acceptor.accept(issue, '''Tag as «StorageType::PRGROM.literal»''', prgDesc, null, [ o, ctx |
+			(o as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::PRGROM]
+		])
+		acceptor.accept(issue, '''Tag as «StorageType::CHRROM.literal»''', chrDesc, null, [ o, ctx |
+			(o as Variable).storage = NoopFactory::eINSTANCE.createStorage => [type = StorageType::CHRROM]
+		])
+	}
+	
+	@Fix(NoopValidator::CONSTANT_FIELD_STORAGE)
+	def constantFieldStorage(Issue issue, IssueResolutionAcceptor acceptor) {
+		val label = '''Remove «issue.data.get(1)» tag'''
+		val desc = issue.data.head
+		acceptor.accept(issue, label, desc, null, [o, ctx|
+			(o as Variable).storage = null
 		])
 	}
 }
