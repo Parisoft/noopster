@@ -25,7 +25,7 @@ class NoopBuildParticipant extends BuilderParticipant {
 
 		if (resources.forall[shouldGenerate(context)]) {
 			try {
-				val games = resources.flatMap[contents].filter(NoopClass).filter[game]
+				val games = resources.flatMap[contents].filter(NoopClass).filter[main]
 				val game = games.maxBy[superClasses.size]
 				val delta = deltas.findFirst[uri == game.eResource.URI]//TODO compile all non relatives games
 

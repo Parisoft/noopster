@@ -13,6 +13,8 @@ import org.parisoft.noop.noop.StorageType
 import org.parisoft.noop.noop.Variable
 import org.parisoft.noop.noop.NoopFactory
 import java.util.regex.Pattern
+import org.parisoft.noop.^extension.Members
+import org.parisoft.noop.noop.Method
 
 /**
  * Custom quickfixes.
@@ -42,6 +44,48 @@ class NoopQuickfixProvider extends DefaultQuickfixProvider {
 			(c as NoopClass).superClass = null
 		])
 	}
+	
+	@Fix(NoopValidator::METHOD_IRQ_NON_STATIC)
+	def methodIrqNonStatic(Issue issue, IssueResolutionAcceptor acceptor) {
+		val name = issue.data.head
+		val static = Members::STATIC_PREFIX + name
+		val label = '''Make «name» static'''
+		val desc = '''
+		«static»() «issue.data.get(1)» {
+			...
+		}'''
+		acceptor.acceptMulti(issue, label, desc, null, [Method m|
+			m.name = static
+		])
+	}
+	
+	@Fix(NoopValidator::METHOD_IRQ_PARAMS)
+	def methodIrqParams(Issue issue, IssueResolutionAcceptor acceptor) {
+		val name = issue.data.head
+		val label = '''Remove «name» parameters'''
+		val desc = '''
+		«name»() «issue.data.get(1)» {
+			...
+		}
+		'''
+		acceptor.acceptMulti(issue, label, desc, null, [Method m|
+			m.params.clear
+		])
+	}
+	
+	@Fix(NoopValidator::METHOD_STORAGE_TYPE)
+	def methodStorageType(Issue issue, IssueResolutionAcceptor acceptor) {
+		val name = issue.data.head
+		val label = '''Remove «issue.data.get(1)» tag'''
+		val desc = '''
+		«name»(...) {
+			...
+		}
+		'''
+		acceptor.accept(issue, label, desc, null, [o, ctx|
+			(o as Method).storage = null
+		])
+	}
 
 	@Fix(NoopValidator::STRING_FILE_NON_ROM)
 	def stringFileNonRom(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -57,12 +101,21 @@ class NoopQuickfixProvider extends DefaultQuickfixProvider {
 	
 	@Fix(NoopValidator::ROM_FIELD_NON_CONSTANT)
 	def romFieldNonConstant(Issue issue, IssueResolutionAcceptor acceptor) {
-		val const = camelCasePattern.split(issue.data.head).join('_').toUpperCase
-		val label = '''Make «issue.data.head» constant'''
+		val name = issue.data.head
+		val const = '''«IF !name.contains(Members::STATIC_PREFIX)»«Members::STATIC_PREFIX»«ENDIF»«camelCasePattern.split(name).join('_').toUpperCase»'''
+		val label = '''Make «name» constant'''
 		val desc = '''«const» «issue.data.get(1)»'''
-//		acceptor.accept(issue, label, desc, null, [ctx|
-//			ctx.xtextDocument.replace(issue.offset, issue.data.head.length, const)
-//		])
+		acceptor.acceptMulti(issue, label, desc, null, [Variable v|
+			v.name = const
+		])
+	}
+	
+	@Fix(NoopValidator::INES_FIELD_NON_CONSTANT)
+	def inesFieldNonConstant(Issue issue, IssueResolutionAcceptor acceptor) {
+		val name = issue.data.head
+		val const = '''«IF !name.contains(Members::STATIC_PREFIX)»«Members::STATIC_PREFIX»«ENDIF»«camelCasePattern.split(name).join('_').toUpperCase»'''
+		val label = '''Make «name» constant'''
+		val desc = '''«const» «issue.data.get(1)»'''
 		acceptor.acceptMulti(issue, label, desc, null, [Variable v|
 			v.name = const
 		])

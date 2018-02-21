@@ -73,8 +73,9 @@ class NoopProposalProvider extends AbstractNoopProposalProvider {
 				val superClass = if(EObjectOrProxy.eIsProxy) EObjectOrProxy.resolve(model) else EObjectOrProxy
 
 				if (superClass instanceof NoopClass) {
-					if (superClass.isVoid || superClass.isPrimitive || superClass.isINESHeader ||
-						superClass.superClasses.exists[isInstanceOf(model)]) {
+					if (superClass.isVoid || superClass.isPrimitive || superClass.superClasses.exists [
+						isInstanceOf(model)
+					]) {
 						return false
 					}
 				}
@@ -119,7 +120,7 @@ class NoopProposalProvider extends AbstractNoopProposalProvider {
 		ICompletionProposalAcceptor acceptor) {
 		if (model instanceof MemberSelect) {
 			val receiver = model.receiver
-			val variables = receiver.typeOf.allFieldsTopDown.filter[isAccessibleFrom(model)].suppressHeaders
+			val variables = receiver.typeOf.allFieldsTopDown.filter[isAccessibleFrom(model)]
 			val methods = receiver.typeOf.allMethodsTopDown.filter[isAccessibleFrom(model)]
 
 			if (receiver.dimensionOf.size > 0) {
@@ -354,18 +355,12 @@ class NoopProposalProvider extends AbstractNoopProposalProvider {
 			Method:
 				model.params
 			NoopClass:
-				model.allFieldsTopDown.takeWhile [
-					it != context.currentModel
-				].suppressOverriden.suppressHeaders
+				model.allFieldsTopDown.takeWhile[it != context.currentModel].suppressOverriden
 			NewInstance:
 				model.type.allFieldsBottomUp
 			default:
 				newArrayList
 		} + model.eContainer.listVariables(context)
-	}
-
-	private def suppressHeaders(Iterable<Variable> variables) {
-		variables.filter[typeOf.nonINESHeader]
 	}
 
 	private def <M extends Member> suppressOverriden(Iterable<M> members) {
