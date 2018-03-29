@@ -258,6 +258,8 @@ Visit https://github.com/Parisoft/noop
       <plugin id="com.google.guava"/>
       <plugin id="com.google.inject"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.jcraft.jsch"/>
+      <plugin id="javaewah"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.inject"/>
       <plugin id="javax.servlet"/>
@@ -268,6 +270,7 @@ Visit https://github.com/Parisoft/noop
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.apache.commons.cli"/>
+      <plugin id="org.apache.commons.compress"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.logging"/>
@@ -415,6 +418,7 @@ Visit https://github.com/Parisoft/noop
       <plugin id="org.eclipse.jface.text"/>
       <plugin id="org.eclipse.jgit"/>
       <plugin id="org.eclipse.jgit.archive"/>
+      <plugin id="org.eclipse.jsch.core"/>
       <plugin id="org.eclipse.ltk.core.refactoring"/>
       <plugin id="org.eclipse.ltk.ui.refactoring"/>
       <plugin id="org.eclipse.m2e.archetype.common"/>

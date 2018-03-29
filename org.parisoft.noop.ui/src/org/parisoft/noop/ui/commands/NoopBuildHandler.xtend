@@ -23,7 +23,10 @@ class NoopBuildHandler extends NoopAbstractHandler {
 		}
 
 		event.activeWorkbenchWindow.run(false, true) [ monitor |
+			val ini = System::currentTimeMillis
 			project.build(IncrementalProjectBuilder::FULL_BUILD, monitor);
+			println('''Build = «System::currentTimeMillis - ini»ms''')
+			println
 		]
 
 		val failed = project.members.exists [

@@ -36,3 +36,4 @@ Export-Package: org.parisoft.noop.ui;uses:="com.google.inject,org.eclipse.ui.plu
  org.parisoft.noop.ui.wizards; uses:="org.eclipse.ui,  org.eclipse.swt.widgets,  org.eclipse.jface.wizard,  org.eclipse.jface.viewers",
  utils
 Bundle-Activator: org.parisoft.noop.ui.internal.NoopActivator
+Automatic-Module-Name: org.parisoft.noop.ui
