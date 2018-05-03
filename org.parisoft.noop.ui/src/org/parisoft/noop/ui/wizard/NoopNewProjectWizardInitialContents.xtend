@@ -26,9 +26,9 @@ class NoopNewProjectWizardInitialContents {
 		fsa.generateFile(
 			'''«projectCreator?.modelFolderName»/«className».«fileExtensionProvider.primaryFileExtension»''',
 			'''
-				«className» extends Game {
+				«className» {
 					
-					$reset() {
+					$reset() @Reset {
 						// game initialization
 						
 						forever {
@@ -36,8 +36,8 @@ class NoopNewProjectWizardInitialContents {
 						}
 					}
 					
-					$nmi() {
-						// draw stuff goes here
+					$nmi() @NMI {
+						// draw and timing stuff goes here
 					}
 					
 				}
