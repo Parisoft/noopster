@@ -4,6 +4,8 @@
 package org.parisoft.noop.ui.outline
 
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
+import org.parisoft.noop.noop.Method
+import org.parisoft.noop.noop.Variable
 
 /**
  * Customization of the default outline structure.
@@ -12,4 +14,12 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
  */
 class NoopOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
+	def _isLeaf(Variable v) {
+		true
+	}
+	
+	def _isLeaf(Method m) {
+		true
+	}
+	
 }
