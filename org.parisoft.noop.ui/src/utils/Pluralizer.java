@@ -158,7 +158,7 @@ public class Pluralizer {
                 {"ephemeris", "ephemerides"}, // classical
                 {"mongoose", "mongoose"}, // anglicized
                 {"mythos", "mythoi"}, // classical
-                // TODO: handle entire word correctly
+                // ToDo: handle entire word correctly
                 //{ "ox", "oxen" }, // classical
                 {"soliloquy", "soliloquies"}, // anglicized
                 {"trilby", "trilbys"}, // anglicized
