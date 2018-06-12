@@ -15,6 +15,8 @@ import org.parisoft.noop.^extension.Members
 import org.parisoft.noop.noop.Method
 import org.parisoft.noop.noop.NoopClass
 import org.parisoft.noop.noop.Variable
+import org.parisoft.noop.^extension.Methods
+import org.parisoft.noop.^extension.Variables
 
 /**
  * Provides labels for EObjects.
@@ -24,6 +26,8 @@ import org.parisoft.noop.noop.Variable
 class NoopLabelProvider extends DefaultEObjectLabelProvider {
 
 	@Inject extension Members
+	@Inject extension Methods
+	@Inject extension Variables
 	@Inject extension Classes
 	@Inject extension Expressions
 

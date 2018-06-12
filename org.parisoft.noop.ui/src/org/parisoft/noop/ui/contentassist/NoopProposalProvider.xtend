@@ -43,6 +43,8 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
 import static extension utils.Pluralizer.*
 import org.parisoft.noop.noop.ArrayLiteral
+import org.parisoft.noop.^extension.Methods
+import org.parisoft.noop.^extension.Variables
 
 /**
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist
@@ -52,6 +54,8 @@ class NoopProposalProvider extends AbstractNoopProposalProvider {
 
 	@Inject extension Files
 	@Inject extension Members
+	@Inject extension Methods
+	@Inject extension Variables
 	@Inject extension Classes
 	@Inject extension Expressions
 

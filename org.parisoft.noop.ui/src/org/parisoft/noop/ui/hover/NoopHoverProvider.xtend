@@ -14,12 +14,16 @@ import utils.Images
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension java.lang.Integer.*
+import org.parisoft.noop.^extension.Methods
+import org.parisoft.noop.^extension.Variables
 
 class NoopHoverProvider extends DefaultEObjectHoverProvider {
 
 	@Inject extension Images
 	@Inject extension Classes
 	@Inject extension Members
+	@Inject extension Methods
+	@Inject extension Variables
 	@Inject extension Expressions
 	@Inject extension NoopLabelProvider
 
