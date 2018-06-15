@@ -36,8 +36,8 @@ class NoopUiModule extends AbstractNoopUiModule {
 
 	override configure(Binder binder) {
 		super.configure(binder)
-		binder.bind(String).annotatedWith(Names.named((XtextContentAssistProcessor.COMPLETION_AUTO_ACTIVATION_CHARS))).
-			toInstance(".,:")
+		binder.bind(String).annotatedWith(
+			Names::named((XtextContentAssistProcessor::COMPLETION_AUTO_ACTIVATION_CHARS))).toInstance(".")
 		binder.bind(IEObjectHoverProvider).to(NoopHoverProvider)
 		binder.bind(IHighlightingConfiguration).to(NoopHighlightingConfiguration)
 		binder.bind(AbstractAntlrTokenToAttributeIdMapper).to(NoopAntlrTokenToAttributeIdMapper)
