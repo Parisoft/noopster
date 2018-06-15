@@ -529,4 +529,10 @@
           sequence="M1+F9">
     </key>
  </extension>
+ <extension
+       point="org.eclipse.xtext.ui.shared.overridingGuiceModule">
+    <module
+          class="org.parisoft.noop.ui.NoopOverrideGuiceModule">
+    </module>
+ </extension>
 </plugin>
