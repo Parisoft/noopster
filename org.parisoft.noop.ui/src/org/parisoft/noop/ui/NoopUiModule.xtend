@@ -8,11 +8,13 @@ import com.google.inject.name.Names
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.ide.refactoring.IResourceRelocationStrategy
+import org.eclipse.xtext.ui.editor.contentassist.IContentProposalPriorities
 import org.eclipse.xtext.ui.editor.contentassist.XtextContentAssistProcessor
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider
 import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
-import org.parisoft.noop.ui.build.NoopBuildParticipant
+import org.parisoft.noop.consoles.Console
+import org.parisoft.noop.ui.contentassist.NoopContentProposalPriorities
 import org.parisoft.noop.ui.contentassist.NoopTemplateProposalProvider
 import org.parisoft.noop.ui.highlighting.NoopAntlrTokenToAttributeIdMapper
 import org.parisoft.noop.ui.highlighting.NoopHighlightingConfiguration
@@ -24,10 +26,7 @@ import org.parisoft.noop.ui.wizard.NoopNewProjectWizard
 import org.parisoft.noop.ui.wizard.NoopNewProjectWizard2
 import org.parisoft.noop.ui.wizard.NoopProjectCreator
 import org.parisoft.noop.ui.wizard.NoopProjectCreator2
-import org.parisoft.noop.consoles.Console
 import utils.NoopConsole
-import org.eclipse.xtext.ui.editor.contentassist.IContentProposalPriorities
-import org.parisoft.noop.ui.contentassist.NoopContentProposalPriorities
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -37,7 +36,8 @@ class NoopUiModule extends AbstractNoopUiModule {
 
 	override configure(Binder binder) {
 		super.configure(binder)
-		binder.bind(String).annotatedWith(Names.named((XtextContentAssistProcessor.COMPLETION_AUTO_ACTIVATION_CHARS))).toInstance(".,:")
+		binder.bind(String).annotatedWith(
+			Names::named((XtextContentAssistProcessor::COMPLETION_AUTO_ACTIVATION_CHARS))).toInstance(".")
 		binder.bind(IEObjectHoverProvider).to(NoopHoverProvider)
 		binder.bind(IHighlightingConfiguration).to(NoopHighlightingConfiguration)
 		binder.bind(AbstractAntlrTokenToAttributeIdMapper).to(NoopAntlrTokenToAttributeIdMapper)
@@ -48,17 +48,13 @@ class NoopUiModule extends AbstractNoopUiModule {
 		binder.bind(Console).to(NoopConsole)
 		binder.bind(IContentProposalPriorities).to(NoopContentProposalPriorities)
 	}
-	
+
 	override bindITemplateProposalProvider() {
 		NoopTemplateProposalProvider
 	}
-	
+
 	override bindIRenameStrategy() {
 		NoopRenameStrategy
 	}
-	
-	override bindIXtextBuilderParticipant() {
-		NoopBuildParticipant
-	}
-	
+
 }
