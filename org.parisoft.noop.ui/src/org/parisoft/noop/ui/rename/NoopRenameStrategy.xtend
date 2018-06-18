@@ -16,7 +16,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 
 class NoopRenameStrategy extends DefaultRenameStrategy {
 
-	private IRenameElementContext context;
+	IRenameElementContext context;
 
 	override initialize(EObject targetElement, IRenameElementContext context) {
 		this.context = context
